@@ -125,11 +125,13 @@ void countNum(char *filepath) {
 
 	char bufferLine[500];
 	while (!feof(fp)) {
+		bufferLine[0] = '\0';
 		fgets(bufferLine, 500, fp);   //fgets will save '\n'
 		res.line++;
 
 		//记录有效字符和单词总数，及判断空行
 		int len = strlen(bufferLine);
+		//cout << len << endl;
 		bool leftBlank = true, isEmpty = true;
 		for (int i = 0; i < len; ++i) {    //不用处理单词破折符（跨行单词，因为是程序文件），要处理行前空格 ?，还有最后一行最后一个单词
 			if (isValidChar(bufferLine[i]))
@@ -218,7 +220,7 @@ int main(int argc, char *argv[]) {
 	}
 	if (flag.s) {
 		pattern = "";
-		int lastBackSlash, fin = 0;
+		int lastBackSlash = 2, fin = 0;
 		//int len = strlen(filepath);
 		for (int i = 0; filepath[i] != '\0'; ++i) {
 			//cout << i << endl;
