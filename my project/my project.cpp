@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <ShlObj.h>
 #include <stdio.h>
+#include <regex>
 using namespace std;
 
 struct Flag {
@@ -12,6 +13,8 @@ struct Result {
 	int character, word, line;
 	int blankLine, commentLine, codeLine;
 }res;
+
+string pattern;
 
 void dirList(const string& strPath);
 bool getPathWin(TCHAR* filepath);
@@ -49,6 +52,11 @@ void dirList(const string& strPath) {
 		strOldName = strRawPath;
 		strOldName.append(winFindData.cFileName);
 		string strNewName = strOldName;
+		//可以判断文件类型，从而过滤掉不要的文件
+		if (pattern != "") {
+			if (!regex_search(strNewName, regex(pattern)))
+				continue;
+		}
 
 		cout << strNewName << endl;
 		FILE* fp = fopen(strNewName.data(), "r");
@@ -208,8 +216,29 @@ int main(int argc, char *argv[]) {
 		if (strcmp(argv[i], "-x") == 0)
 			flag.x = true;
 	}
-	if (flag.s)
+	if (flag.s) {
+		pattern = "";
+		int lastBackSlash, fin = 0;
+		//int len = strlen(filepath);
+		for (int i = 0; filepath[i] != '\0'; ++i) {
+			//cout << i << endl;
+			if (filepath[i] == '\\')
+				lastBackSlash = i;
+			if (filepath[i] == '.') {
+				fin = 1;
+				for (int j = i + 1; filepath[j] != '\0' && filepath[j] != '\\'; ++j)
+					pattern += filepath[j];
+			}
+			if (fin)	break;
+		}
+		if (fin) {
+			for (int i = lastBackSlash; filepath[i] != '\0'; ++i)
+				filepath[i] = '\0';
+		}
+		//cout << filepath << endl;
+		//cout << pattern << endl;
 		dirList(filepath);
+	}
 	else {
 		countNum(filepath);
 		display();
