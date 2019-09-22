@@ -1,7 +1,6 @@
 ﻿#include <bits/stdc++.h>
 #include <windows.h>
 #include <ShlObj.h>
-#include <stdio.h>
 #include <regex>
 using namespace std;
 
